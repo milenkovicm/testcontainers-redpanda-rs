@@ -43,16 +43,11 @@ impl Image for Redpanda {
     type Args = RedpandaArgs;
 
     fn name(&self) -> String {
-        // we keep my version of redpanda as we know config options
-        // are correct.
-        // "milenkovicm/testcontainer-redpanda".into()
         "docker.vectorized.io/vectorized/redpanda".into()
     }
 
     fn tag(&self) -> String {
-        // "latest".into()
         "v22.1.3".into()
-        //"v21.11.15".into()
     }
 
     fn ready_conditions(&self) -> Vec<testcontainers::core::WaitFor> {
