@@ -1,0 +1,17 @@
+[package]
+name = "testcontainers-redpanda-rs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4"
+testcontainers = "0.14"
+
+
+[dev-dependencies]
+env_logger = "0.9"
+rdkafka = { version = "0.28", features = ["cmake-build"] }
+rusty_ulid = "1.0"
+tokio = { version = "1.15", features = ["rt", "macros"]}

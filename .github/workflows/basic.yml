@@ -1,0 +1,39 @@
+name: Rust Rust Flow
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+      - '**.yaml'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+      - '**.yaml'
+
+env:
+  CARGO_TERM_COLOR: always
+  # this one speeds up builds
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        components: rustfmt, clippy
+    - name: Cargo Format
+      run: cargo fmt --all --check --        
+    - uses: Swatinem/rust-cache@v1
+      with:
+        cache-on-failure: true
+    - name: Cargo Compile (with tests)
+      run: cargo test --no-run --all-features
+    - name: Cargo Test
+      run: cargo test -- --nocapture --quiet
