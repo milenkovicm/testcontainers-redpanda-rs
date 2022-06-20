@@ -77,13 +77,11 @@ impl Image for Redpanda {
             cs.host_port_ipv4(REDPANDA_PORT)
         );
 
-        let ready_wait_conditions = vec![WaitFor::Duration {
-            length: std::time::Duration::from_secs(2),
-        }];
-
         commands.push(ExecCommand {
-            cmd: cmd0.into(),
-            ready_conditions: ready_wait_conditions,
+            cmd: cmd0,
+            ready_conditions: vec![WaitFor::Duration {
+                length: std::time::Duration::from_secs(2),
+            }],
         });
 
         commands
