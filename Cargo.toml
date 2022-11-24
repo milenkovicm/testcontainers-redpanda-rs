@@ -12,7 +12,7 @@ testcontainers = "0.14"
 
 
 [dev-dependencies]
-env_logger = "0.9"
+env_logger = "0.10"
 rdkafka = { version = "0.29", features = ["cmake-build"] }
 rusty_ulid = "1.0"
 tokio = { version = "1.15", features = ["rt", "macros"]}
