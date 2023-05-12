@@ -6,8 +6,35 @@ use testcontainers::{
 pub const REDPANDA_PORT: u16 = 9092;
 pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
 
-#[derive(Default)]
-pub struct Redpanda {}
+#[derive(Debug)]
+pub struct Redpanda {
+    tag: String,
+}
+
+impl Redpanda {
+    /// creates container for specified tag
+    pub fn for_tag(tag: String) -> Self {
+        Self { tag }
+    }
+
+    // fn wait_to_settle() -> Option<u64> {
+    //     std::env::var("REDPANDA_SETTLE_SECS")
+    //         .map(|v| (v.parse::<u64>()).ok())
+    //         .unwrap_or_default()
+    // }
+
+    // pub fn default() -> RunnableImage<Self> {
+    //     RunnableImage::from(Self { tag : "latest".into(), wait_to_settle_secs: 3 })
+    //         .with_mapped_port((REDPANDA_PORT, REDPANDA_PORT))
+    //         .with_mapped_port((SCHEMA_REGISTRY_PORT, SCHEMA_REGISTRY_PORT))
+    // }
+}
+
+impl Default for Redpanda {
+    fn default() -> Self {
+        Self { tag: "latest".into() }
+    }
+}
 
 #[allow(dead_code)]
 impl Redpanda {
@@ -47,7 +74,7 @@ impl Image for Redpanda {
     }
 
     fn tag(&self) -> String {
-        "v22.1.3".into()
+        self.tag.to_owned()
     }
 
     fn ready_conditions(&self) -> Vec<testcontainers::core::WaitFor> {
