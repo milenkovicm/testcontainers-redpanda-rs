@@ -8,11 +8,11 @@ pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
 
 ///
 /// # Redpanda Test Container
-/// 
-/// Current limitations: 
-/// 
+///
+/// Current limitations:
+///
 ///  * it will use default kafka ports and only one test can  at any time on given host. It was too complicated getting it right.
-/// 
+///
 
 #[derive(Debug)]
 pub struct Redpanda {
