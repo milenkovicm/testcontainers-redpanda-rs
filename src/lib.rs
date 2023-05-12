@@ -6,13 +6,21 @@ use testcontainers::{
 pub const REDPANDA_PORT: u16 = 9092;
 pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
 
+///
+/// # Redpanda Test Container
+/// 
+/// Current limitations: 
+/// 
+///  * it will use default kafka ports and only one test can  at any time on given host. It was too complicated getting it right.
+/// 
+
 #[derive(Debug)]
 pub struct Redpanda {
     tag: String,
 }
 
 impl Redpanda {
-    /// creates container for specified tag
+    /// creates test container for specified tag
     pub fn for_tag(tag: String) -> RunnableImage<Self> {
         RunnableImage::from(Self { tag })
             .with_mapped_port((REDPANDA_PORT, REDPANDA_PORT))
@@ -30,7 +38,7 @@ impl Redpanda {
     pub fn default() -> RunnableImage<Self> {
         Self::latest()
     }
-
+    /// creates test container with `latest` tag
     pub fn latest() -> RunnableImage<Self> {
         Self::for_tag("latest".into())
     }
@@ -41,11 +49,11 @@ impl Redpanda {
     pub fn cmd_create_topic(topic_name: &str, partitions: i32) -> ExecCommand {
         log::debug!("cmd create topic [{}], with [{}] partition(s0", topic_name, partitions);
         let ready_conditions = vec![
-            WaitFor::Duration {
-                length: std::time::Duration::from_secs(1),
-            },
             WaitFor::StdErrMessage {
                 message: String::from("Create topics"),
+            },
+            WaitFor::Duration {
+                length: std::time::Duration::from_secs(1),
             },
         ];
 
