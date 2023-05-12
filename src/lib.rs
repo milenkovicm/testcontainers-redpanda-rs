@@ -1,6 +1,6 @@
 use testcontainers::{
     core::{ContainerState, ExecCommand, WaitFor},
-    Image, ImageArgs,
+    Image, ImageArgs, RunnableImage,
 };
 
 pub const REDPANDA_PORT: u16 = 9092;
@@ -13,8 +13,10 @@ pub struct Redpanda {
 
 impl Redpanda {
     /// creates container for specified tag
-    pub fn for_tag(tag: String) -> Self {
-        Self { tag }
+    pub fn for_tag(tag: String) -> RunnableImage<Self> {
+        RunnableImage::from(Self { tag })
+            .with_mapped_port((REDPANDA_PORT, REDPANDA_PORT))
+            .with_mapped_port((SCHEMA_REGISTRY_PORT, SCHEMA_REGISTRY_PORT))
     }
 
     // fn wait_to_settle() -> Option<u64> {
@@ -23,16 +25,14 @@ impl Redpanda {
     //         .unwrap_or_default()
     // }
 
-    // pub fn default() -> RunnableImage<Self> {
-    //     RunnableImage::from(Self { tag : "latest".into(), wait_to_settle_secs: 3 })
-    //         .with_mapped_port((REDPANDA_PORT, REDPANDA_PORT))
-    //         .with_mapped_port((SCHEMA_REGISTRY_PORT, SCHEMA_REGISTRY_PORT))
-    // }
-}
+    #[deprecated = "Use Self::latest()"]
+    #[allow(clippy::should_implement_trait)]
+    pub fn default() -> RunnableImage<Self> {
+        Self::latest()
+    }
 
-impl Default for Redpanda {
-    fn default() -> Self {
-        Self { tag: "latest".into() }
+    pub fn latest() -> RunnableImage<Self> {
+        Self::for_tag("latest".into())
     }
 }
 
@@ -40,9 +40,14 @@ impl Default for Redpanda {
 impl Redpanda {
     pub fn cmd_create_topic(topic_name: &str, partitions: i32) -> ExecCommand {
         log::debug!("cmd create topic [{}], with [{}] partition(s0", topic_name, partitions);
-        let ready_conditions = vec![WaitFor::Duration {
-            length: std::time::Duration::from_millis(100),
-        }];
+        let ready_conditions = vec![
+            WaitFor::Duration {
+                length: std::time::Duration::from_secs(1),
+            },
+            WaitFor::StdErrMessage {
+                message: String::from("Create topics"),
+            },
+        ];
 
         ExecCommand {
             cmd: format!("rpk topic create {} -p {}", topic_name, partitions),
@@ -59,7 +64,9 @@ impl ImageArgs for RedpandaArgs {
         Box::new(
             vec![
                 "-c".into(),
-                "while true; do echo \"*** container started ***\" ; sleep infinity; done".into(),
+                // "while true; do echo \"*** container started ***\" ; sleep infinity; done".into(),
+                "/usr/bin/rpk redpanda start --check=false --node-id 0 --set redpanda.auto_create_topics_enabled=true"
+                    .into(),
             ]
             .into_iter(),
         )
@@ -78,9 +85,14 @@ impl Image for Redpanda {
     }
 
     fn ready_conditions(&self) -> Vec<testcontainers::core::WaitFor> {
-        vec![WaitFor::StdOutMessage {
-            message: String::from("*** container started ***"),
-        }]
+        vec![
+            WaitFor::StdErrMessage {
+                message: String::from("Successfully started Redpanda!"),
+            },
+            WaitFor::Duration {
+                length: std::time::Duration::from_secs(1),
+            },
+        ]
     }
 
     fn entrypoint(&self) -> Option<String> {
@@ -97,20 +109,6 @@ impl Image for Redpanda {
             cs.host_port_ipv4(REDPANDA_PORT)
         );
 
-        let mut commands = vec![];
-
-        let cmd0 = format!(
-            "/usr/bin/rpk redpanda start --check=false --node-id 0 --set redpanda.auto_create_topics_enabled=true --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092 --advertise-kafka-addr PLAINTEXT://localhost:29092,OUTSIDE://localhost:{}",
-            cs.host_port_ipv4(REDPANDA_PORT)
-        );
-
-        commands.push(ExecCommand {
-            cmd: cmd0,
-            ready_conditions: vec![WaitFor::Duration {
-                length: std::time::Duration::from_secs(2),
-            }],
-        });
-
-        commands
+        vec![]
     }
 }

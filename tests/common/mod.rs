@@ -1,3 +1,7 @@
+//!
+//! # Common For tests
+//!
+
 #![allow(dead_code)]
 
 use log::LevelFilter;
