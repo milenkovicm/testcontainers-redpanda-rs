@@ -9,6 +9,14 @@ pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
 ///
 /// # Redpanda Test Container
 ///
+/// It starts a `redpanda` node for testing purposes.
+///
+/// Under the hood it should start something like:
+///
+/// ```bash
+/// docker run -ti --name=redpanda-1 --rm -p 9092:9092 -p 9644:9644 -p 8081:8081 docker.redpanda.com/redpandadata/redpanda redpanda start --overprovisioned --smp 1 --memory 1G --reserve-memory 0M --node-id 0 --check=false
+/// ```
+///
 /// Current limitations:
 ///
 ///  * it will use default kafka ports and only one test can  at any time on given host. It was too complicated getting it right.
@@ -26,12 +34,6 @@ impl Redpanda {
             .with_mapped_port((REDPANDA_PORT, REDPANDA_PORT))
             .with_mapped_port((SCHEMA_REGISTRY_PORT, SCHEMA_REGISTRY_PORT))
     }
-
-    // fn wait_to_settle() -> Option<u64> {
-    //     std::env::var("REDPANDA_SETTLE_SECS")
-    //         .map(|v| (v.parse::<u64>()).ok())
-    //         .unwrap_or_default()
-    // }
 
     #[deprecated = "Use Self::latest()"]
     #[allow(clippy::should_implement_trait)]
@@ -72,7 +74,6 @@ impl ImageArgs for RedpandaArgs {
         Box::new(
             vec![
                 "-c".into(),
-                // "while true; do echo \"*** container started ***\" ; sleep infinity; done".into(),
                 "/usr/bin/rpk redpanda start --check=false --node-id 0 --set redpanda.auto_create_topics_enabled=true"
                     .into(),
             ]
@@ -85,7 +86,9 @@ impl Image for Redpanda {
     type Args = RedpandaArgs;
 
     fn name(&self) -> String {
-        "docker.vectorized.io/vectorized/redpanda".into()
+        "docker.redpanda.com/redpandadata/redpanda".into()
+        // there is a change in container name (and location)
+        // "docker.vectorized.io/vectorized/redpanda".into()
     }
 
     fn tag(&self) -> String {
@@ -95,11 +98,16 @@ impl Image for Redpanda {
     fn ready_conditions(&self) -> Vec<testcontainers::core::WaitFor> {
         vec![
             WaitFor::StdErrMessage {
-                message: String::from("Successfully started Redpanda!"),
+                // this is better message to wait for than
+                // message: String::from("Successfully started Redpanda!"),
+                // as at that point cluster will be initialized and client will retrieve
+                // right cluster id.
+                message: String::from("Initialized cluster_id to "),
             },
-            WaitFor::Duration {
-                length: std::time::Duration::from_secs(1),
-            },
+            // No need to wait for cluster to settle down if we get `Initialized cluster_id to` message
+            // WaitFor::Duration {
+            //     length: std::time::Duration::from_secs(1),
+            // },
         ]
     }
 
