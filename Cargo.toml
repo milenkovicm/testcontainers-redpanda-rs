@@ -8,7 +8,7 @@ license = "MIT"
 
 [dependencies]
 log = "0.4"
-testcontainers = "0.14"
+testcontainers = "0.15"
 
 
 [dev-dependencies]
