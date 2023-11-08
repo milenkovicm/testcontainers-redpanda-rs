@@ -1,4 +1,4 @@
-name: Rust Rust Flow
+name: Rust Flow
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
     paths-ignore:
       - '**.md'
       - '**.yaml'
-  # pull_request:
-  #   branches: [ master ]
-  #   paths-ignore:
-  #     - '**.md'
-  #     - '**.yaml'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+      - '**.yaml'
 
 env:
   CARGO_TERM_COLOR: always
@@ -30,7 +30,7 @@ jobs:
         components: rustfmt, clippy
     - name: Cargo Format
       run: cargo fmt --all --check --        
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
       with:
         cache-on-failure: true
     - name: Cargo Compile (with tests)
