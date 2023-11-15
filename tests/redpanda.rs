@@ -1,7 +1,6 @@
 mod common;
 #[cfg(test)]
 mod test {
-
     use crate::common::*;
     use log::info;
     use testcontainers::clients;

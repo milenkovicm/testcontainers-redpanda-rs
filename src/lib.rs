@@ -4,10 +4,12 @@ use testcontainers::{
     core::{ContainerState, ExecCommand, WaitFor},
     Image, ImageArgs, RunnableImage,
 };
-/// Redpanda port
+/// Redpanda/Kafka API port
 pub const REDPANDA_PORT: u16 = 9092;
-/// Schema registry port
+/// Schema Registry Port
 pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
+/// Prometheus and HTTP admin port
+pub const ADMIN_PORT: u16 = 9644;
 
 #[derive(Debug)]
 pub struct Redpanda {
@@ -20,6 +22,7 @@ impl Redpanda {
         RunnableImage::from(Self { tag })
             .with_mapped_port((REDPANDA_PORT, REDPANDA_PORT))
             .with_mapped_port((SCHEMA_REGISTRY_PORT, SCHEMA_REGISTRY_PORT))
+            .with_mapped_port((ADMIN_PORT, ADMIN_PORT))
     }
 
     #[deprecated = "Use Self::latest()"]
@@ -103,7 +106,7 @@ impl Image for Redpanda {
     }
 
     fn expose_ports(&self) -> Vec<u16> {
-        vec![REDPANDA_PORT, SCHEMA_REGISTRY_PORT]
+        vec![REDPANDA_PORT, SCHEMA_REGISTRY_PORT, ADMIN_PORT]
     }
 
     fn exec_after_start(&self, cs: ContainerState) -> Vec<ExecCommand> {
