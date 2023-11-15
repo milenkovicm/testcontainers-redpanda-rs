@@ -38,8 +38,15 @@ impl Redpanda {
 
 #[allow(dead_code)]
 impl Redpanda {
+    /// A command to create new topic with specified number of partitions
+    ///
+    /// # Arguments
+    ///
+    /// - `topic_name` name of the topic to be created
+    /// - `partitions` number fo partitions for given topic
     pub fn cmd_create_topic(topic_name: &str, partitions: i32) -> ExecCommand {
         log::debug!("cmd create topic [{}], with [{}] partition(s0", topic_name, partitions);
+        // not the best ready_condition
         let ready_conditions = vec![
             WaitFor::StdErrMessage {
                 message: String::from("Create topics"),
@@ -64,7 +71,7 @@ impl ImageArgs for RedpandaArgs {
         Box::new(
             vec![
                 "-c".into(),
-                "/usr/bin/rpk redpanda start --check=false --node-id 0 --set redpanda.auto_create_topics_enabled=true"
+                "/usr/bin/rpk redpanda start --mode dev-container --node-id 0 --set redpanda.auto_create_topics_enabled=true"
                     .into(),
             ]
             .into_iter(),
@@ -72,13 +79,18 @@ impl ImageArgs for RedpandaArgs {
     }
 }
 
+// Test container should execute docker command similar to:
+//
+// ```
+// docker run -ti --name=redpanda-1 --rm -p 9092:9092 -p 9644:9644 -p 8081:8081  docker.redpanda.com/redpandadata/redpanda redpanda start --mode dev-container --node-id 0 --set redpanda.auto_create_topics_enabled=true
+// ```
+
 impl Image for Redpanda {
     type Args = RedpandaArgs;
 
     fn name(&self) -> String {
+        // TODO: make container name configurable
         "docker.redpanda.com/redpandadata/redpanda".into()
-        // there is a change in container name (and location)
-        // "docker.vectorized.io/vectorized/redpanda".into()
     }
 
     fn tag(&self) -> String {
@@ -109,12 +121,7 @@ impl Image for Redpanda {
         vec![REDPANDA_PORT, SCHEMA_REGISTRY_PORT, ADMIN_PORT]
     }
 
-    fn exec_after_start(&self, cs: ContainerState) -> Vec<ExecCommand> {
-        log::info!(
-            "setting extra configuration for test container ... port: {}",
-            cs.host_port_ipv4(REDPANDA_PORT)
-        );
-
+    fn exec_after_start(&self, _: ContainerState) -> Vec<ExecCommand> {
         vec![]
     }
 }

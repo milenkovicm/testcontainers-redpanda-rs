@@ -12,7 +12,7 @@ Add dependency:
 testcontainers-redpanda-rs = "0.1"
 ```
 
-Usage example:
+Create and run redpanda container:
 
 ```rust
 use testcontainers::clients;
@@ -22,7 +22,7 @@ let docker = clients::Cli::default();
 let container = Redpanda::latest();
 let redpanda_node = docker.run(container);
 
-// auto create topic is enabled by default,
+// Auto create topic is enabled by default,
 // use this if you need to create a topic with 
 // specific number of partitions. 
 redpanda_node.exec(Redpanda::cmd_create_topic("new_topic", 3));
