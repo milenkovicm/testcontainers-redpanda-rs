@@ -2,21 +2,29 @@
 
 Unofficial testcontainer for [Redpanda](https://redpanda.com).
 
+Add dependency:
+
+```toml
+testcontainers-redpanda-rs = "0.1"
+```
+
+Usage example:
+
 ```rust
 use testcontainers::clients;
 use testcontainers_redpanda_rs::*;
 
 let docker = clients::Cli::default();
-let container = Redpanda::default();
+let container = Redpanda::latest();
 
-let server_node = docker.run(container);
+let redpanda_node = docker.run(container);
 // auto create topic is enabled 
 // use this to create topic with specific number
 // of partitions.
-server_node.exec(Redpanda::cmd_create_topic("new_topic_name", 3));
-let bootstrap_servers = format!("localhost:{}", server_node.get_host_port_ipv4(REDPANDA_PORT));
+redpanda_node.exec(Redpanda::cmd_create_topic("new_topic", 3));
+let redpanda_server_address = format!("localhost:{}", redpanda_node.get_host_port_ipv4(REDPANDA_PORT));
 
-println!("bootstrap servers: {}", bootstrap_servers);
+println!("red panda server: {}", redpanda_server_address);
 ```
 
 Current limitations:

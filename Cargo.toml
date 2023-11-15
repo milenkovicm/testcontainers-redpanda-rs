@@ -1,6 +1,6 @@
 [package]
 name = "testcontainers-redpanda-rs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 description = "Unofficial redpanda test container"
@@ -8,7 +8,7 @@ homepage = "http://github.com/milenkovicm/testcontainers-redpanda-rs"
 repository = "http://github.com/milenkovicm/testcontainers-redpanda-rs"
 readme = "README.md"
 categories = ["development-tools::testing"]
-keywords = ["testcontainers", "testing", "kafka", "docker", "redpanda"]
+keywords = ["testcontainers", "testing", "kafka", "docker", "redpanda", "integration-testing"]
 
 [dependencies]
 log = "0.4"

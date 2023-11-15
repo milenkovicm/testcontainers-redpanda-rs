@@ -4,8 +4,9 @@ use testcontainers::{
     core::{ContainerState, ExecCommand, WaitFor},
     Image, ImageArgs, RunnableImage,
 };
-
+/// Redpanda port
 pub const REDPANDA_PORT: u16 = 9092;
+/// Schema registry port
 pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
 
 #[derive(Debug)]
