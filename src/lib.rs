@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 use testcontainers::{
     core::{ContainerState, ExecCommand, WaitFor},
     Image, ImageArgs, RunnableImage,
@@ -5,22 +7,6 @@ use testcontainers::{
 
 pub const REDPANDA_PORT: u16 = 9092;
 pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
-
-///
-/// # Redpanda Test Container
-///
-/// It starts a `redpanda` node for testing purposes.
-///
-/// Under the hood it should start something like:
-///
-/// ```bash
-/// docker run -ti --name=redpanda-1 --rm -p 9092:9092 -p 9644:9644 -p 8081:8081 docker.redpanda.com/redpandadata/redpanda redpanda start --overprovisioned --smp 1 --memory 1G --reserve-memory 0M --node-id 0 --check=false
-/// ```
-///
-/// Current limitations:
-///
-///  * it will use default kafka ports and only one test can  at any time on given host. It was too complicated getting it right.
-///
 
 #[derive(Debug)]
 pub struct Redpanda {
