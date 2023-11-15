@@ -7,7 +7,8 @@ description = "Unofficial redpanda test container"
 homepage = "http://github.com/milenkovicm/testcontainers-redpanda-rs"
 repository = "http://github.com/milenkovicm/testcontainers-redpanda-rs"
 readme = "README.md"
-categories = ["testcontainers", "test", "kafka", "docker"]
+categories = ["development-tools::testing"]
+keywords = ["testcontainers", "testing", "kafka", "docker", "redpanda"]
 
 [dependencies]
 log = "0.4"

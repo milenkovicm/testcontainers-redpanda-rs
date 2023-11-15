@@ -1,5 +1,7 @@
 # Testcontainer(-rs) for Redpanda
 
+Unofficial testcontainer for [Redpanda](https://redpanda.com).
+
 ```rust
 use testcontainers::clients;
 use testcontainers_redpanda_rs::*;
