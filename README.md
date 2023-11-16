@@ -14,7 +14,7 @@ testcontainers-redpanda-rs = "0.1"
 
 Create and run redpanda container:
 
-```rust
+```rust, no_run
 use testcontainers::clients;
 use testcontainers_redpanda_rs::*;
 
