@@ -98,7 +98,6 @@ impl Image for Redpanda {
     type Args = RedpandaArgs;
 
     fn name(&self) -> String {
-        // TODO: make container name configurable
         "docker.redpanda.com/redpandadata/redpanda".into()
     }
 

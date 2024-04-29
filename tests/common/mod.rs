@@ -38,7 +38,7 @@ pub fn get_bootstrap_server() -> String {
 }
 
 pub struct ProducerTestContext {
-    _some_data: i64, // Add some data so that valgrind can check proper allocation
+    _some_data: i64,
 }
 
 impl ClientContext for ProducerTestContext {

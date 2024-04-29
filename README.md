@@ -9,7 +9,8 @@ Unofficial testcontainer for [Redpanda](https://redpanda.com).
 Add dependency:
 
 ```toml
-testcontainers-redpanda-rs = "0.1"
+testcontainers-redpanda-rs = { version = "0.2" }
+testcontainers = { version = "0.16" }
 ```
 
 Create and run redpanda container:
@@ -17,6 +18,7 @@ Create and run redpanda container:
 ```rust, no_run
 use testcontainers::runners::AsyncRunner;
 use testcontainers_redpanda_rs::*;
+
 #[tokio::main]
 async fn main() {
     let container = Redpanda::latest();
@@ -32,6 +34,5 @@ async fn main() {
 }
 ```
 
-Current limitations:
-
-* It will use default kafka ports and only one test can  at any time on given host. It was too complicated getting it right.
+> [!WARNING]  
+> It will use default kafka ports and only one test can  at any time on given host.

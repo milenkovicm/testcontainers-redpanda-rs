@@ -10,10 +10,7 @@ mod test {
     async fn should_start_redpanda_server_send_messages() {
         let container = Redpanda::latest();
 
-        let server_node = container
-            //.with_mapped_port(PortMapping {local: REDPANDA_PORT, internal: REDPANDA_PORT})
-            .start()
-            .await;
+        let server_node = container.start().await;
 
         let bootstrap_servers = format!(
             "{}:{}",
