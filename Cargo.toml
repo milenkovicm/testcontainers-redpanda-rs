@@ -1,6 +1,6 @@
 [package]
 name = "testcontainers-redpanda-rs"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 description = "Unofficial redpanda test container"
@@ -12,11 +12,11 @@ keywords = ["testcontainers", "testing", "kafka", "redpanda", "integration-testi
 
 [dependencies]
 log = "0.4"
-testcontainers = "0.15"
-
+testcontainers = "0.16"
 
 [dev-dependencies]
 env_logger = "0.11"
 rdkafka = { version = "0.36", features = ["cmake-build"] }
 rusty_ulid = "2.0"
 tokio = { version = "1", features = ["rt", "macros"]}
+ctor = { version = "0.2"}

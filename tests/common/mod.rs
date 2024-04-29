@@ -4,7 +4,6 @@
 
 #![allow(dead_code)]
 
-use log::LevelFilter;
 use rdkafka::admin::{AdminClient, AdminOptions, NewTopic, TopicReplication};
 use rdkafka::client::ClientContext;
 use rdkafka::config::ClientConfig;
@@ -61,14 +60,6 @@ pub async fn create_topic(name: &str, partitions: i32) {
         .unwrap();
 }
 
-pub fn setup_logger(_log_thread: bool, rust_log: Option<&str>) {
-    let _ = env_logger::builder()
-        .filter_level(LevelFilter::Info)
-        .parse_filters(rust_log.unwrap_or_default())
-        .is_test(true)
-        .try_init();
-}
-
 /// Produce the specified count of messages to the topic and partition specified. A map
 /// of (partition, offset) -> message id will be returned. It panics if any error is encountered
 /// while populating the topic.
@@ -94,7 +85,7 @@ where
         .set("statistics.interval.ms", "500")
         .set("api.version.request", "true")
         .set("debug", "all")
-        .set("message.timeout.ms", "30000")
+        .set("message.timeout.ms", "10000")
         .create_with_context::<ProducerTestContext, FutureProducer<_>>(prod_context)
         .expect("Producer creation error");
 
@@ -184,4 +175,11 @@ pub fn consumer_config<'a>(
     }
 
     config
+}
+
+#[cfg(test)]
+#[ctor::ctor]
+fn init() {
+    // Enable RUST_LOG logging configuration for test
+    let _ = env_logger::builder().is_test(true).try_init();
 }

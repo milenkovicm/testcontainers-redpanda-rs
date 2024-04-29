@@ -45,9 +45,9 @@ impl Redpanda {
     /// - `topic_name` name of the topic to be created
     /// - `partitions` number fo partitions for given topic
     pub fn cmd_create_topic(topic_name: &str, partitions: i32) -> ExecCommand {
-        log::debug!("cmd create topic [{}], with [{}] partition(s0", topic_name, partitions);
+        log::debug!("cmd create topic [{}], with [{}] partition(s)", topic_name, partitions);
         // not the best ready_condition
-        let ready_conditions = vec![
+        let container_ready_conditions = vec![
             WaitFor::StdErrMessage {
                 message: String::from("Create topics"),
             },
@@ -56,10 +56,19 @@ impl Redpanda {
             },
         ];
 
-        ExecCommand {
-            cmd: format!("rpk topic create {} -p {}", topic_name, partitions),
-            ready_conditions,
-        }
+        //ExecCommand::new(vec![format!("rpk topic create {} -p {}", topic_name, partitions)])
+        ExecCommand::new(vec![
+            String::from("rpk"),
+            String::from("topic"),
+            String::from("create"),
+            String::from(topic_name),
+            String::from("-p"),
+            format!("{}", partitions),
+        ])
+        .with_cmd_ready_condition(WaitFor::Duration {
+            length: std::time::Duration::from_secs(1),
+        })
+        .with_container_ready_conditions(container_ready_conditions)
     }
 }
 
@@ -118,10 +127,18 @@ impl Image for Redpanda {
     }
 
     fn expose_ports(&self) -> Vec<u16> {
-        vec![REDPANDA_PORT, SCHEMA_REGISTRY_PORT, ADMIN_PORT]
+        //vec![REDPANDA_PORT, SCHEMA_REGISTRY_PORT, ADMIN_PORT]
+        vec![]
     }
 
     fn exec_after_start(&self, _: ContainerState) -> Vec<ExecCommand> {
         vec![]
     }
+}
+
+#[cfg(test)]
+#[ctor::ctor]
+fn init() {
+    // Enable RUST_LOG logging configuration for test
+    let _ = env_logger::builder().is_test(true).try_init();
 }

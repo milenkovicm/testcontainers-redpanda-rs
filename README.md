@@ -18,18 +18,16 @@ Create and run redpanda container:
 use testcontainers::clients;
 use testcontainers_redpanda_rs::*;
 
-let docker = clients::Cli::default();
 let container = Redpanda::latest();
-let redpanda_node = docker.run(container);
 
-// Auto create topic is enabled by default,
-// use this if you need to create a topic with 
-// specific number of partitions. 
-redpanda_node.exec(Redpanda::cmd_create_topic("new_topic", 3));
+let server_node = container.start().await;
+let bootstrap_servers = format!("localhost:{}", server_node.get_host_port_ipv4(REDPANDA_PORT).await);
+// if topic has only one partition this part is optional
+// it will be automatically created when client connects
+let test_topic_name = "test_topic";
+server_node.exec(Redpanda::cmd_create_topic(test_topic_name, 3)).await;
 
-let redpanda_server_address = format!("localhost:{}", redpanda_node.get_host_port_ipv4(REDPANDA_PORT));
-
-println!("Redpanda server: {}", redpanda_server_address);
+println!("Redpanda server: {}", bootstrap_servers);
 ```
 
 Current limitations:
