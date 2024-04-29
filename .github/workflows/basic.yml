@@ -23,11 +23,10 @@ jobs:
     timeout-minutes: 6
     steps:
     - uses: actions/checkout@v3
-    - uses: actions-rs/toolchain@v1
+    - uses: dtolnay/rust-toolchain@stable
       with:
-        profile: minimal
         toolchain: stable
-        components: rustfmt, clippy
+        components: rustfmt
     - name: Cargo Format
       run: cargo fmt --all --check --        
     - uses: Swatinem/rust-cache@v2
