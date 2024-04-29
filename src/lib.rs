@@ -127,7 +127,9 @@ impl Image for Redpanda {
     }
 
     fn expose_ports(&self) -> Vec<u16> {
-        //vec![REDPANDA_PORT, SCHEMA_REGISTRY_PORT, ADMIN_PORT]
+        // this is not needed as we map it explicitly
+        // and testcontainer gets confused and re-map it
+        // vec![REDPANDA_PORT, SCHEMA_REGISTRY_PORT, ADMIN_PORT]
         vec![]
     }
 
