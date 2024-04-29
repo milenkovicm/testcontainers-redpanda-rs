@@ -6,6 +6,11 @@
 
 Unofficial testcontainer for [Redpanda](https://redpanda.com).
 
+> [!NOTE]
+>
+> - version 0.2.x supports `testcontainer` 0.16
+> - version 0.1.x supports `testcontainer` 0.15
+
 Add dependency:
 
 ```toml
