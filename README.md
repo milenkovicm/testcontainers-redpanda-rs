@@ -15,7 +15,7 @@ testcontainers-redpanda-rs = "0.1"
 Create and run redpanda container:
 
 ```rust, no_run
-use testcontainers::clients;
+use testcontainers::runners::AsyncRunner;
 use testcontainers_redpanda_rs::*;
 
 let container = Redpanda::latest();
