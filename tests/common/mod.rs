@@ -2,9 +2,8 @@
 //! # Common For tests
 //!
 
-#![allow(dead_code)]
+//#![allow(dead_code)]
 
-use rdkafka::admin::{AdminClient, AdminOptions, NewTopic, TopicReplication};
 use rdkafka::client::ClientContext;
 use rdkafka::config::ClientConfig;
 use rdkafka::consumer::ConsumerContext;
@@ -21,18 +20,6 @@ use std::time::Duration;
 /// Taken from https://github.com/fede1024/rust-rdkafka/blob/master/tests/utils.rs with some slight modifications and updates
 /// credit to rdkafka
 
-pub fn rand_test_topic() -> String {
-    format!("__test_{}", random_topic_name())
-}
-
-pub fn rand_test_group() -> String {
-    format!("__test_{}", random_topic_name())
-}
-
-pub fn rand_test_transactional_id() -> String {
-    format!("__test_{}", random_topic_name())
-}
-
 pub fn get_bootstrap_server() -> String {
     env::var("KAFKA_HOST").unwrap_or_else(|_| "localhost:9092".to_owned())
 }
@@ -43,21 +30,6 @@ pub struct ProducerTestContext {
 
 impl ClientContext for ProducerTestContext {
     fn stats(&self, _: Statistics) {} // Don't print stats
-}
-
-pub async fn create_topic(name: &str, partitions: i32) {
-    let client: AdminClient<_> = consumer_config("create_topic", None)
-        .into_iter()
-        .collect::<ClientConfig>()
-        .create()
-        .unwrap();
-    client
-        .create_topics(
-            &[NewTopic::new(name, partitions, TopicReplication::Fixed(1))],
-            &AdminOptions::new(),
-        )
-        .await
-        .unwrap();
 }
 
 /// Produce the specified count of messages to the topic and partition specified. A map
@@ -84,7 +56,7 @@ where
         .set("bootstrap.servers", get_bootstrap_server().as_str())
         .set("statistics.interval.ms", "500")
         .set("api.version.request", "true")
-        .set("debug", "all")
+        //.set("debug", "all")
         .set("message.timeout.ms", "10000")
         .create_with_context::<ProducerTestContext, FutureProducer<_>>(prod_context)
         .expect("Producer creation error");
@@ -149,32 +121,6 @@ impl ConsumerContext for ConsumerTestContext {
     fn commit_callback(&self, result: KafkaResult<()>, _offsets: &TopicPartitionList) {
         log::info!("Committing offsets: {:?}", result);
     }
-}
-
-pub fn consumer_config<'a>(
-    group_id: &'a str,
-    config_overrides: Option<HashMap<&'a str, &'a str>>,
-) -> HashMap<String, String> {
-    let mut config: HashMap<String, String> = HashMap::new();
-
-    config.insert("group.id".into(), group_id.into());
-    config.insert("client.id".into(), "datafusion-streams".into());
-    config.insert("bootstrap.servers".into(), get_bootstrap_server());
-    config.insert("enable.partition.eof".into(), "true".into());
-    config.insert("session.timeout.ms".into(), "6000".into());
-    config.insert("enable.auto.commit".into(), "true".into());
-    config.insert("statistics.interval.ms".into(), "500".into());
-    config.insert("api.version.request".into(), "true".into());
-    config.insert("debug".into(), "all".into());
-    config.insert("auto.offset.reset".into(), "earliest".into());
-
-    if let Some(overrides) = config_overrides {
-        for (key, value) in overrides {
-            config.insert(key.into(), value.into());
-        }
-    }
-
-    config
 }
 
 #[cfg(test)]

@@ -21,7 +21,7 @@ mod test {
         std::env::set_var("KAFKA_HOST", &bootstrap_servers);
 
         assert!(bootstrap_servers.len() > 10);
-        let test_topic_name = "test_topic";
+        let test_topic_name = random_topic_name();
 
         log::info!("populating topic: [{}] ...", test_topic_name);
         populate_topic(&test_topic_name, 10, &value_fn, &key_fn, Some(0), None).await;

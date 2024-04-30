@@ -15,7 +15,7 @@ mod test {
 
         // if topic has only one partition this part is optional
         // it will be automatically created when client connects
-        let test_topic_name = "test_topic";
+        let test_topic_name = &random_topic_name();
         server_node.exec(Redpanda::cmd_create_topic(test_topic_name, 3)).await;
 
         info!("bootstrap servers: {}", bootstrap_servers);

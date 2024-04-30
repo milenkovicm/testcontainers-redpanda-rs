@@ -6,10 +6,10 @@
 
 Unofficial testcontainer for [Redpanda](https://redpanda.com).
 
-> [!NOTE]
->
-> - version 0.2.x supports `testcontainer` 0.16
-> - version 0.1.x supports `testcontainer` 0.15
+Note:
+
+- version `0.2.x` supports `testcontainer` `0.16`
+- version `0.1.x` supports `testcontainer` `0.15`
 
 Add dependency:
 
@@ -38,5 +38,6 @@ async fn main() {
 }
 ```
 
-> [!WARNING]  
-> It will use default kafka ports and only one test can  at any time on given host.
+Limitations:
+
+- It will use default kafka ports and only single test can run  on given host.
