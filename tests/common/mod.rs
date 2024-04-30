@@ -2,40 +2,20 @@
 //! # Common For tests
 //!
 
-//#![allow(dead_code)]
-
-use rdkafka::client::ClientContext;
 use rdkafka::config::ClientConfig;
-use rdkafka::consumer::ConsumerContext;
-use rdkafka::error::KafkaResult;
 use rdkafka::message::ToBytes;
 use rdkafka::producer::{FutureProducer, FutureRecord};
-use rdkafka::statistics::Statistics;
-use rdkafka::TopicPartitionList;
 use std::collections::HashMap;
-use std::env;
-
 use std::time::Duration;
 
 /// Taken from https://github.com/fede1024/rust-rdkafka/blob/master/tests/utils.rs with some slight modifications and updates
 /// credit to rdkafka
 
-pub fn get_bootstrap_server() -> String {
-    env::var("KAFKA_HOST").unwrap_or_else(|_| "localhost:9092".to_owned())
-}
-
-pub struct ProducerTestContext {
-    _some_data: i64,
-}
-
-impl ClientContext for ProducerTestContext {
-    fn stats(&self, _: Statistics) {} // Don't print stats
-}
-
 /// Produce the specified count of messages to the topic and partition specified. A map
 /// of (partition, offset) -> message id will be returned. It panics if any error is encountered
 /// while populating the topic.
 pub async fn populate_topic<P, K, J, Q>(
+    bootstrap_server: &str,
     topic_name: &str,
     count: i32,
     value_fn: &P,
@@ -49,16 +29,14 @@ where
     J: ToBytes,
     Q: ToBytes,
 {
-    let prod_context = ProducerTestContext { _some_data: 1234 };
-
     // Produce some messages
     let producer = &ClientConfig::new()
-        .set("bootstrap.servers", get_bootstrap_server().as_str())
+        .set("bootstrap.servers", bootstrap_server)
         .set("statistics.interval.ms", "500")
         .set("api.version.request", "true")
         //.set("debug", "all")
         .set("message.timeout.ms", "10000")
-        .create_with_context::<ProducerTestContext, FutureProducer<_>>(prod_context)
+        .create::<FutureProducer<_>>()
         .expect("Producer creation error");
 
     let futures = (0..count)
@@ -103,24 +81,6 @@ pub fn key_fn(id: i32) -> String {
 
 pub fn random_topic_name() -> String {
     rusty_ulid::generate_ulid_string()
-}
-
-pub struct ConsumerTestContext {
-    pub _n: i64, // Add data for memory access validation
-}
-
-impl ClientContext for ConsumerTestContext {
-    // Access stats
-    fn stats(&self, stats: Statistics) {
-        let stats_str = format!("{:?}", stats);
-        log::info!("Stats received: {} bytes", stats_str.len());
-    }
-}
-
-impl ConsumerContext for ConsumerTestContext {
-    fn commit_callback(&self, result: KafkaResult<()>, _offsets: &TopicPartitionList) {
-        log::info!("Committing offsets: {:?}", result);
-    }
 }
 
 #[cfg(test)]
