@@ -21,7 +21,6 @@ testcontainers = { version = "0.16" }
 Create and run redpanda container:
 
 ```rust, no_run
-use testcontainers::runners::AsyncRunner;
 use testcontainers_redpanda_rs::*;
 
 #[tokio::main]

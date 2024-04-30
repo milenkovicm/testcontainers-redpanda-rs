@@ -4,6 +4,8 @@ use testcontainers::{
     core::{ContainerState, ExecCommand, WaitFor},
     Image, ImageArgs, RunnableImage,
 };
+
+pub use testcontainers::runners::AsyncRunner;
 /// Redpanda/Kafka API port
 pub const REDPANDA_PORT: u16 = 9092;
 /// Schema Registry Port

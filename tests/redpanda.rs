@@ -3,7 +3,6 @@ mod common;
 mod test {
     use crate::common::*;
     use log::info;
-    use testcontainers::runners::AsyncRunner;
     use testcontainers_redpanda_rs::*;
 
     #[tokio::test]
