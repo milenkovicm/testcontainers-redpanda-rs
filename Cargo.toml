@@ -1,6 +1,6 @@
 [package]
 name = "testcontainers-redpanda-rs"
-version = "0.2.1"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 description = "Unofficial redpanda test container"
@@ -12,7 +12,7 @@ keywords = ["testcontainers", "testing", "kafka", "redpanda", "integration-testi
 
 [dependencies]
 log = "0.4"
-testcontainers = { version = "0.16" }
+testcontainers = { version = "0.17" }
 
 [dev-dependencies]
 env_logger = "0.11"

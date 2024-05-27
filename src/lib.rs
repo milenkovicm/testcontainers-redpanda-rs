@@ -2,7 +2,7 @@
 
 use testcontainers::{
     core::{ContainerState, ExecCommand, WaitFor},
-    Image, ImageArgs, RunnableImage,
+    Image, ImageArgs, RunnableImage, TestcontainersError,
 };
 
 pub use testcontainers::runners::AsyncRunner;
@@ -51,7 +51,7 @@ impl Redpanda {
         // not the best ready_condition
         let container_ready_conditions = vec![
             WaitFor::StdErrMessage {
-                message: String::from("Create topics"),
+                message: "Create topics".into(),
             },
             WaitFor::Duration {
                 length: std::time::Duration::from_secs(1),
@@ -114,7 +114,7 @@ impl Image for Redpanda {
                 // message: String::from("Successfully started Redpanda!"),
                 // as at that point cluster will be initialized and client will retrieve
                 // right cluster id.
-                message: String::from("Initialized cluster_id to "),
+                message: "Initialized cluster_id to ".into(),
             },
             // No need to wait for cluster to settle down if we get `Initialized cluster_id to` message
             // WaitFor::Duration {
@@ -134,8 +134,8 @@ impl Image for Redpanda {
         vec![]
     }
 
-    fn exec_after_start(&self, _: ContainerState) -> Vec<ExecCommand> {
-        vec![]
+    fn exec_after_start(&self, _: ContainerState) -> Result<Vec<ExecCommand>, TestcontainersError> {
+        Ok(vec![])
     }
 }
 

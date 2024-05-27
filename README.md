@@ -27,12 +27,12 @@ use testcontainers_redpanda_rs::*;
 async fn main() {
     let container = Redpanda::latest();
 
-    let server_node = container.start().await;
-    let bootstrap_servers = format!("localhost:{}", server_node.get_host_port_ipv4(REDPANDA_PORT).await);
+    let server_node = container.start().await.unwrap();
+    let bootstrap_servers = format!("localhost:{}", server_node.get_host_port_ipv4(REDPANDA_PORT).await.unwrap());
     // if topic has only one partition this part is optional
     // it will be automatically created when client connects
     let test_topic_name = "test_topic";
-    server_node.exec(Redpanda::cmd_create_topic(test_topic_name, 3)).await;
+    server_node.exec(Redpanda::cmd_create_topic(test_topic_name, 3)).await.unwrap();
 
     println!("Redpanda server: {}", bootstrap_servers);
 }
