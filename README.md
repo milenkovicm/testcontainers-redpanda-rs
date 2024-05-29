@@ -4,18 +4,19 @@
 [![Crates.io](https://img.shields.io/crates/v/testcontainers-redpanda-rs)](https://crates.io/crates/testcontainers-redpanda-rs)
 [![Crates.io](https://img.shields.io/crates/d/testcontainers-redpanda-rs)](https://crates.io/crates/testcontainers-redpanda-rs)
 
-Unofficial testcontainer for [Redpanda](https://redpanda.com).
+Unofficial testcontainer for [Redpanda](https://redpanda.com). Redpanda is a simple, powerful, and cost-efficient streaming data platform that is compatible with Kafka APIs but much less complex, faster and more affordable.
 
 Note:
 
+- version `0.3.x` supports `testcontainer` `0.17`
 - version `0.2.x` supports `testcontainer` `0.16`
 - version `0.1.x` supports `testcontainer` `0.15`
 
 Add dependency:
 
 ```toml
-testcontainers-redpanda-rs = { version = "0.2" }
-testcontainers = { version = "0.16" }
+testcontainers-redpanda-rs = { version = "0.3" }
+testcontainers = { version = "0.17" }
 ```
 
 Create and run redpanda container:
@@ -31,8 +32,7 @@ async fn main() {
     let bootstrap_servers = format!("localhost:{}", server_node.get_host_port_ipv4(REDPANDA_PORT).await.unwrap());
     // if topic has only one partition this part is optional
     // it will be automatically created when client connects
-    let test_topic_name = "test_topic";
-    server_node.exec(Redpanda::cmd_create_topic(test_topic_name, 3)).await.unwrap();
+    server_node.exec(Redpanda::cmd_create_topic("test_topic", 3)).await.unwrap();
 
     println!("Redpanda server: {}", bootstrap_servers);
 }
