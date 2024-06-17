@@ -1,8 +1,8 @@
 #![doc = include_str!("../README.md")]
 
 use testcontainers::{
-    core::{ContainerState, ExecCommand, WaitFor},
-    Image, ImageArgs, RunnableImage, TestcontainersError,
+    core::{CmdWaitFor, ContainerPort, ContainerState, ExecCommand, WaitFor},
+    ContainerRequest, Image, ImageExt, TestcontainersError,
 };
 
 pub use testcontainers::runners::AsyncRunner;
@@ -20,20 +20,20 @@ pub struct Redpanda {
 
 impl Redpanda {
     /// creates test container for specified tag
-    pub fn for_tag(tag: String) -> RunnableImage<Self> {
-        RunnableImage::from(Self { tag })
-            .with_mapped_port((REDPANDA_PORT, REDPANDA_PORT))
-            .with_mapped_port((SCHEMA_REGISTRY_PORT, SCHEMA_REGISTRY_PORT))
-            .with_mapped_port((ADMIN_PORT, ADMIN_PORT))
+    pub fn for_tag(tag: String) -> ContainerRequest<Self> {
+        ContainerRequest::from(Self { tag })
+            .with_mapped_port(REDPANDA_PORT, ContainerPort::Tcp(REDPANDA_PORT))
+            .with_mapped_port(SCHEMA_REGISTRY_PORT, ContainerPort::Tcp(SCHEMA_REGISTRY_PORT))
+            .with_mapped_port(ADMIN_PORT, ContainerPort::Tcp(ADMIN_PORT))
     }
 
     #[deprecated = "Use Self::latest()"]
     #[allow(clippy::should_implement_trait)]
-    pub fn default() -> RunnableImage<Self> {
+    pub fn default() -> ContainerRequest<Self> {
         Self::latest()
     }
     /// creates test container with `latest` tag
-    pub fn latest() -> RunnableImage<Self> {
+    pub fn latest() -> ContainerRequest<Self> {
         Self::for_tag("latest".into())
     }
 }
@@ -67,26 +67,10 @@ impl Redpanda {
             String::from("-p"),
             format!("{}", partitions),
         ])
-        .with_cmd_ready_condition(WaitFor::Duration {
+        .with_cmd_ready_condition(CmdWaitFor::Duration {
             length: std::time::Duration::from_secs(1),
         })
         .with_container_ready_conditions(container_ready_conditions)
-    }
-}
-
-#[derive(Debug, Default, Clone)]
-pub struct RedpandaArgs {}
-
-impl ImageArgs for RedpandaArgs {
-    fn into_iterator(self) -> Box<dyn Iterator<Item = String>> {
-        Box::new(
-            vec![
-                "-c".into(),
-                "/usr/bin/rpk redpanda start --mode dev-container --node-id 0 --set redpanda.auto_create_topics_enabled=true"
-                    .into(),
-            ]
-            .into_iter(),
-        )
     }
 }
 
@@ -97,14 +81,23 @@ impl ImageArgs for RedpandaArgs {
 // ```
 
 impl Image for Redpanda {
-    type Args = RedpandaArgs;
+    //type Args = RedpandaArgs;
 
-    fn name(&self) -> String {
-        "docker.redpanda.com/redpandadata/redpanda".into()
+    fn name(&self) -> &str {
+        "docker.redpanda.com/redpandadata/redpanda"
     }
 
-    fn tag(&self) -> String {
-        self.tag.to_owned()
+    fn cmd(&self) -> impl IntoIterator<Item = impl Into<std::borrow::Cow<'_, str>>> {
+        vec![
+                "-c",
+                "/usr/bin/rpk redpanda start --mode dev-container --node-id 0 --set redpanda.auto_create_topics_enabled=true"
+                    ,
+            ]
+            .into_iter()
+    }
+
+    fn tag(&self) -> &str {
+        self.tag.as_str()
     }
 
     fn ready_conditions(&self) -> Vec<testcontainers::core::WaitFor> {
@@ -123,15 +116,15 @@ impl Image for Redpanda {
         ]
     }
 
-    fn entrypoint(&self) -> Option<String> {
-        Some("sh".into())
+    fn entrypoint(&self) -> Option<&str> {
+        Some("sh")
     }
 
-    fn expose_ports(&self) -> Vec<u16> {
+    fn expose_ports(&self) -> &[ContainerPort] {
         // this is not needed as we map it explicitly
         // and testcontainer gets confused and re-map it
         // vec![REDPANDA_PORT, SCHEMA_REGISTRY_PORT, ADMIN_PORT]
-        vec![]
+        &[]
     }
 
     fn exec_after_start(&self, _: ContainerState) -> Result<Vec<ExecCommand>, TestcontainersError> {

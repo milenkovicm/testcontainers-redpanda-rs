@@ -8,6 +8,7 @@ Unofficial testcontainer for [Redpanda](https://redpanda.com). Redpanda is a sim
 
 Note:
 
+- version `0.4.x` supports `testcontainer` `0.18`
 - version `0.3.x` supports `testcontainer` `0.17`
 - version `0.2.x` supports `testcontainer` `0.16`
 - version `0.1.x` supports `testcontainer` `0.15`
