@@ -58,14 +58,14 @@ impl Redpanda {
             },
         ];
 
-        //ExecCommand::new(vec![format!("rpk topic create {} -p {}", topic_name, partitions)])
+        // ExecCommand::new(vec![format!("rpk topic create {} -p {}", topic_name, partitions)])
         ExecCommand::new(vec![
             String::from("rpk"),
             String::from("topic"),
             String::from("create"),
             String::from(topic_name),
             String::from("-p"),
-            format!("{}", partitions),
+            partitions.to_string(),
         ])
         .with_cmd_ready_condition(CmdWaitFor::Duration {
             length: std::time::Duration::from_secs(1),
@@ -81,8 +81,6 @@ impl Redpanda {
 // ```
 
 impl Image for Redpanda {
-    //type Args = RedpandaArgs;
-
     fn name(&self) -> &str {
         "docker.redpanda.com/redpandadata/redpanda"
     }
@@ -91,7 +89,6 @@ impl Image for Redpanda {
         vec![
                 "-c",
                 "/usr/bin/rpk redpanda start --mode dev-container --node-id 0 --set redpanda.auto_create_topics_enabled=true"
-                    ,
             ]
             .into_iter()
     }
