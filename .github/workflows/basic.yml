@@ -8,9 +8,9 @@ on:
       - '**.yaml'
   pull_request:
     branches: [ master ]
-    paths-ignore:
-      - '**.md'
-      - '**.yaml'
+#    paths-ignore:
+#      - '**.md'
+#      - '**.yaml'
 
 env:
   CARGO_TERM_COLOR: always

@@ -18,8 +18,7 @@ Note:
 Add dependency:
 
 ```toml
-testcontainers-redpanda-rs = { version = "0.4" }
-testcontainers = { version = "0.18" }
+testcontainers-redpanda-rs = { version = "0.6" }
 ```
 
 Create and run redpanda container:
