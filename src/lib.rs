@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 use testcontainers::{
-    core::{CmdWaitFor, ContainerPort, ContainerState, ExecCommand, WaitFor},
+    core::{wait::LogWaitStrategy, CmdWaitFor, ContainerPort, ContainerState, ExecCommand, WaitFor},
     ContainerRequest, Image, ImageExt, TestcontainersError,
 };
 
@@ -50,9 +50,7 @@ impl Redpanda {
         log::debug!("cmd create topic [{}], with [{}] partition(s)", topic_name, partitions);
         // not the best ready_condition
         let container_ready_conditions = vec![
-            WaitFor::StdErrMessage {
-                message: "Create topics".into(),
-            },
+            WaitFor::Log(LogWaitStrategy::stderr("Create topics")),
             WaitFor::Duration {
                 length: std::time::Duration::from_secs(1),
             },
@@ -100,13 +98,7 @@ impl Image for Redpanda {
 
     fn ready_conditions(&self) -> Vec<testcontainers::core::WaitFor> {
         vec![
-            WaitFor::StdErrMessage {
-                // this is better message to wait for than
-                // message: String::from("Successfully started Redpanda!"),
-                // as at that point cluster will be initialized and client will retrieve
-                // right cluster id.
-                message: "Initialized cluster_id to ".into(),
-            },
+            WaitFor::Log(LogWaitStrategy::stderr("Initialized cluster_id to ")),
             // No need to wait for cluster to settle down if we get `Initialized cluster_id to` message
             // WaitFor::Duration {
             //     length: std::time::Duration::from_secs(1),
