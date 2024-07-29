@@ -79,6 +79,7 @@ impl Redpanda {
 // ```
 // docker run -ti --name=redpanda-1 --rm -p 9092:9092 -p 9644:9644 -p 8081:8081  docker.redpanda.com/redpandadata/redpanda redpanda start --mode dev-container --node-id 0 --set redpanda.auto_create_topics_enabled=true
 // ```
+//
 
 impl Image for Redpanda {
     fn name(&self) -> &str {
