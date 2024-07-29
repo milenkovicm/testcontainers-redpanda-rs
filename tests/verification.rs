@@ -17,6 +17,7 @@ mod test {
         log::info!("bootstrap servers: {}", bootstrap_servers);
 
         let test_topic_name = random_topic_name();
+
         log::info!("populating topic: [{}] ...", test_topic_name);
         populate_topic(&bootstrap_servers, &test_topic_name, 10, &value_fn, &key_fn, None, None).await;
     }
@@ -42,8 +43,8 @@ mod test {
             .unwrap();
 
         log::info!("bootstrap servers: {}", bootstrap_servers);
-
         log::info!("populating topic: [{}] ...", test_topic_name);
+
         populate_topic(
             &bootstrap_servers,
             &test_topic_name,
