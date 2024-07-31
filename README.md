@@ -6,19 +6,10 @@
 
 Unofficial testcontainer for [Redpanda](https://redpanda.com). Redpanda is a simple, powerful, and cost-efficient streaming data platform that is compatible with Kafka APIs but much less complex, faster and more affordable.
 
-Note:
-
-- version `0.6.x` supports `testcontainer` `0.20`
-- version `0.5.x` supports `testcontainer` `0.19`
-- version `0.4.x` supports `testcontainer` `0.18`
-- version `0.3.x` supports `testcontainer` `0.17`
-- version `0.2.x` supports `testcontainer` `0.16`
-- version `0.1.x` supports `testcontainer` `0.15`
-
 Add dependency:
 
 ```toml
-testcontainers-redpanda-rs = { version = "0.6" }
+testcontainers-redpanda-rs = { version = "0.7" }
 ```
 
 Create and run redpanda container:
@@ -43,3 +34,13 @@ async fn main() {
 Limitations:
 
 - It will use default kafka ports and only single test can run  on given host.
+
+Note about version compatibility:
+
+- `0.7.x` supports `testcontainers` `0.21`
+- `0.6.x` supports `testcontainers` `0.20`
+- `0.5.x` supports `testcontainers` `0.19`
+- `0.4.x` supports `testcontainers` `0.18`
+- `0.3.x` supports `testcontainers` `0.17`
+- `0.2.x` supports `testcontainers` `0.16`
+- `0.1.x` supports `testcontainers` `0.15`
