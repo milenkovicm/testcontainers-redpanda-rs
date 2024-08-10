@@ -31,10 +31,6 @@ async fn main() {
 }
 ```
 
-Limitations:
-
-- It will use default kafka ports and only single test can run  on given host.
-
 Note about version compatibility:
 
 - `0.7.x` supports `testcontainers` `0.21`

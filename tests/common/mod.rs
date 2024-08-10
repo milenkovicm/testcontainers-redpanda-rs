@@ -87,5 +87,9 @@ pub fn random_topic_name() -> String {
 #[ctor::ctor]
 fn init() {
     // Enable RUST_LOG logging configuration for test
-    let _ = env_logger::builder().is_test(true).try_init();
+    let _ = env_logger::builder()
+        .filter_level(log::LevelFilter::Info)
+        .parse_filters("testcontainers-redpanda-rs=debug")
+        .is_test(true)
+        .try_init();
 }
