@@ -103,7 +103,7 @@ impl Image for Redpanda {
 
     fn ready_conditions(&self) -> Vec<testcontainers::core::WaitFor> {
         vec![
-            // this has been moved to exec_after_start 
+            // this has been moved to exec_after_start
             //
             // WaitFor::Log(LogWaitStrategy::stderr("Initialized cluster_id to ")),
             // No need to wait for cluster to settle down if we get `Initialized cluster_id to` message
