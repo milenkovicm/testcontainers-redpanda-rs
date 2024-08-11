@@ -12,6 +12,8 @@ pub const REDPANDA_PORT: u16 = 9092;
 pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
 /// Prometheus and HTTP admin port
 pub const ADMIN_PORT: u16 = 9644;
+// script which will be used to start redpanda
+static START_SCRIPT: &str = "/tmp/testcontainers_start.sh";
 
 #[derive(Debug)]
 pub struct Redpanda {
@@ -84,15 +86,14 @@ impl Image for Redpanda {
         "docker.redpanda.com/redpandadata/redpanda"
     }
 
-    //withCommand("sh -c while [ ! -f /start-panda.sh  ]; do sleep 0.1; done; /start-panda.sh);
     fn entrypoint(&self) -> Option<&str> {
         Some("sh")
     }
 
     fn cmd(&self) -> impl IntoIterator<Item = impl Into<std::borrow::Cow<'_, str>>> {
         vec![
-            "-c",
-            "while [ ! -f /tmp/start-panda.sh  ]; do sleep 0.1; done; sh /tmp/start-panda.sh",
+            "-c".to_string(),
+            format!("while [ ! -f {START_SCRIPT}  ]; do sleep 0.1; done; sh {START_SCRIPT}"),
         ]
         .into_iter()
     }
@@ -116,18 +117,17 @@ impl Image for Redpanda {
     fn expose_ports(&self) -> &[ContainerPort] {
         &[]
     }
-
+    // consider setting appropriate variables and executing /entrypoint.sh
     fn exec_after_start(&self, state: ContainerState) -> Result<Vec<ExecCommand>, TestcontainersError> {
-        let c = ExecCommand::new(vec![
-            "sh", "-c",
-            format!("echo '/usr/bin/rpk redpanda start --mode dev-container  --node-id 0 --set redpanda.auto_create_topics_enabled=true --kafka-addr INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092 --advertise-kafka-addr INTERNAL://localhost:29092,EXTERNAL://localhost:{}' > /tmp/start-panda.sh", state.host_port_ipv4(ContainerPort::Tcp(REDPANDA_PORT)).unwrap()).as_str()
-        ]).with_container_ready_conditions(
-            vec![
-                WaitFor::Log(LogWaitStrategy::stderr("Initialized cluster_id to "))
-            ]
-        );
-
-        Ok(vec![c])
+        Ok(vec![
+            ExecCommand::new(vec![
+                "sh", "-c",
+                format!("echo '/usr/bin/rpk redpanda start --mode dev-container  --node-id 0 --set redpanda.auto_create_topics_enabled=true --kafka-addr INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092 --advertise-kafka-addr INTERNAL://localhost:29092,EXTERNAL://localhost:{}' > {START_SCRIPT}", state.host_port_ipv4(ContainerPort::Tcp(REDPANDA_PORT)).unwrap()).as_str()
+            ]).with_container_ready_conditions(
+                vec![
+                    WaitFor::Log(LogWaitStrategy::stderr("Initialized cluster_id to "))
+                ]
+        )])
     }
 }
 
