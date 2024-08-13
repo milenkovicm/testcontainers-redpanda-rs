@@ -1,10 +1,11 @@
 #![doc = include_str!("../README.md")]
 
 use testcontainers::{
-    core::{wait::LogWaitStrategy, CmdWaitFor, ContainerPort, ContainerState, ExecCommand, WaitFor},
-    ContainerRequest, Image, TestcontainersError,
+    core::{wait::LogWaitStrategy, ContainerPort, ContainerState, ExecCommand, WaitFor},
+    ContainerRequest, Image, ImageExt, TestcontainersError,
 };
 
+pub use testcontainers;
 pub use testcontainers::runners::AsyncRunner;
 /// Redpanda/Kafka API port
 pub const REDPANDA_PORT: u16 = 9092;
@@ -13,30 +14,27 @@ pub const SCHEMA_REGISTRY_PORT: u16 = 8081;
 /// Prometheus and HTTP admin port
 pub const ADMIN_PORT: u16 = 9644;
 // script which will be used to start redpanda
-static START_SCRIPT: &str = "/tmp/testcontainers_start.sh";
+const START_SCRIPT: &str = "/tmp/testcontainers_start.sh";
 
-#[derive(Debug)]
-pub struct Redpanda {
-    tag: String,
-}
+const IMAGE: &str = "docker.redpanda.com/redpandadata/redpanda";
+const TAG: &str = "latest";
+
+#[derive(Debug, Default)]
+pub struct Redpanda {}
 
 impl Redpanda {
     /// creates test container for specified tag
+    #[deprecated = "Use testcontainers::ImageExt::with_tag()"]
     pub fn for_tag(tag: String) -> ContainerRequest<Self> {
-        ContainerRequest::from(Self { tag })
+        Self {}.with_tag(tag)
         //.with_mapped_port(REDPANDA_PORT, ContainerPort::Tcp(REDPANDA_PORT))
         //.with_mapped_port(SCHEMA_REGISTRY_PORT, ContainerPort::Tcp(SCHEMA_REGISTRY_PORT))
         //.with_mapped_port(ADMIN_PORT, ContainerPort::Tcp(ADMIN_PORT))
     }
-
-    #[deprecated = "Use Self::latest()"]
-    #[allow(clippy::should_implement_trait)]
-    pub fn default() -> ContainerRequest<Self> {
-        Self::latest()
-    }
     /// creates test container with `latest` tag
+    #[deprecated = "Use Redpanda::default()"]
     pub fn latest() -> ContainerRequest<Self> {
-        Self::for_tag("latest".into())
+        Self {}.with_tag(TAG)
     }
 }
 
@@ -67,9 +65,9 @@ impl Redpanda {
             String::from("-p"),
             partitions.to_string(),
         ])
-        .with_cmd_ready_condition(CmdWaitFor::Duration {
-            length: std::time::Duration::from_secs(1),
-        })
+        // .with_cmd_ready_condition(CmdWaitFor::Duration {
+        //     length: std::time::Duration::from_secs(1),
+        // })
         .with_container_ready_conditions(container_ready_conditions)
     }
 }
@@ -83,7 +81,7 @@ impl Redpanda {
 
 impl Image for Redpanda {
     fn name(&self) -> &str {
-        "docker.redpanda.com/redpandadata/redpanda"
+        IMAGE
     }
 
     fn entrypoint(&self) -> Option<&str> {
@@ -99,7 +97,7 @@ impl Image for Redpanda {
     }
 
     fn tag(&self) -> &str {
-        self.tag.as_str()
+        TAG
     }
 
     fn ready_conditions(&self) -> Vec<testcontainers::core::WaitFor> {

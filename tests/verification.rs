@@ -2,12 +2,13 @@ mod common;
 #[cfg(test)]
 mod test {
     use crate::common::*;
+    use testcontainers_redpanda_rs::testcontainers::ImageExt;
     use testcontainers_redpanda_rs::*;
 
     #[tokio::test]
     #[serial_test::serial]
     async fn should_start_redpanda_server_send_messages() {
-        let container = Redpanda::latest();
+        let container = Redpanda::default();
 
         let instance = container.start().await.unwrap();
         let bootstrap_servers = format!(
@@ -25,7 +26,8 @@ mod test {
     #[tokio::test]
     #[serial_test::serial]
     async fn should_start_redpanda_server_crate_topic_send_messages_to_partition() {
-        let container = Redpanda::latest();
+        // in this case we explicitly provide tag
+        let container = Redpanda::default().with_tag("latest");
 
         let instance = container.start().await.unwrap();
         let bootstrap_servers = format!(
@@ -60,7 +62,7 @@ mod test {
     #[tokio::test]
     #[serial_test::serial]
     async fn should_expose_admin_api() {
-        let container = Redpanda::latest();
+        let container = Redpanda::default();
 
         let instance = container.start().await.unwrap();
         let address_admin_api = format!(
@@ -76,7 +78,7 @@ mod test {
     #[tokio::test]
     #[serial_test::serial]
     async fn should_expose_schema_registry_api() {
-        let container = Redpanda::latest();
+        let container = Redpanda::default();
 
         let instance = container.start().await.unwrap();
         let address_schema_registry = format!(
