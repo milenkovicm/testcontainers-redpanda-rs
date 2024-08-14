@@ -9,7 +9,7 @@ Unofficial testcontainer for [Redpanda](https://redpanda.com). Redpanda is a sim
 Add dependency:
 
 ```toml
-testcontainers-redpanda-rs = { version = "0.7" }
+testcontainers-redpanda-rs = { version = "0.8" }
 ```
 
 Create and run redpanda container:
@@ -31,8 +31,11 @@ async fn main() {
 }
 ```
 
+Explicit dependency on `testcontainers` is not needed.
+
 Note about version compatibility:
 
+- `0.8.x` supports `testcontainers` `0.21`
 - `0.7.x` supports `testcontainers` `0.21`
 - `0.6.x` supports `testcontainers` `0.20`
 - `0.5.x` supports `testcontainers` `0.19`
