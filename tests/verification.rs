@@ -92,4 +92,23 @@ mod test {
 
         assert_eq!(200, response.status().as_u16());
     }
+
+    // testing if it will work with `latest` tag
+    #[tokio::test]
+    #[serial_test::serial]
+    async fn should_start_redpanda_with_latest() {
+        let container = Redpanda::default().with_tag("latest");
+
+        let instance = container.start().await.unwrap();
+        let bootstrap_servers = format!(
+            "localhost:{}",
+            instance.get_host_port_ipv4(REDPANDA_PORT).await.unwrap()
+        );
+        log::info!("bootstrap servers: {}", bootstrap_servers);
+
+        let test_topic_name = random_topic_name();
+
+        log::info!("populating topic: [{}] ...", test_topic_name);
+        populate_topic(&bootstrap_servers, &test_topic_name, 10, &value_fn, &key_fn, None, None).await;
+    }
 }
