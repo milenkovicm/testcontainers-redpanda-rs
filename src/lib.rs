@@ -16,8 +16,8 @@ pub const ADMIN_PORT: u16 = 9644;
 // script which will be used to start redpanda
 const START_SCRIPT: &str = "/tmp/testcontainers_start.sh";
 
-const IMAGE: &str = "docker.redpanda.com/redpandadata/redpanda";
-const TAG: &str = "latest";
+const IMAGE: &str = "redpandadata/redpanda";
+const TAG: &str = "v23.3.20";
 
 #[derive(Debug, Default)]
 pub struct Redpanda {}
