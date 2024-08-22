@@ -17,7 +17,7 @@ pub const ADMIN_PORT: u16 = 9644;
 const START_SCRIPT: &str = "/tmp/testcontainers_start.sh";
 
 const IMAGE: &str = "redpandadata/redpanda";
-const TAG: &str = "v23.3.20";
+const TAG: &str = "v24.2.2";
 
 #[derive(Debug, Default)]
 pub struct Redpanda {}
