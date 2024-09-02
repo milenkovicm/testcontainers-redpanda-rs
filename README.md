@@ -9,7 +9,7 @@ Unofficial testcontainer for [Redpanda](https://redpanda.com). Redpanda is a sim
 Add dependency:
 
 ```toml
-testcontainers-redpanda-rs = { version = "0.8" }
+testcontainers-redpanda-rs = { version = "0.9" }
 ```
 
 Create and run redpanda container:
@@ -19,7 +19,7 @@ use testcontainers_redpanda_rs::*;
 
 #[tokio::main]
 async fn main() {
-    let container = Redpanda::latest();
+    let container = Redpanda::default();
 
     let server_node = container.start().await.unwrap();
     let bootstrap_servers = format!("localhost:{}", server_node.get_host_port_ipv4(REDPANDA_PORT).await.unwrap());
@@ -35,6 +35,7 @@ Explicit dependency on `testcontainers` is not needed.
 
 Note about version compatibility:
 
+- `0.9.x` supports `testcontainers` `0.22`
 - `0.8.x` supports `testcontainers` `0.21`
 - `0.7.x` supports `testcontainers` `0.21`
 - `0.6.x` supports `testcontainers` `0.20`
