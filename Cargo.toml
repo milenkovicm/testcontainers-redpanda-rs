@@ -12,7 +12,7 @@ keywords = ["testcontainers", "testing", "kafka", "redpanda", "integration-testi
 
 [dependencies]
 log = "0.4"
-testcontainers = { version = "0.22" }
+testcontainers = { version = "0.23" }
 
 [dev-dependencies]
 env_logger = "0.11"
