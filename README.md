@@ -35,6 +35,7 @@ Explicit dependency on `testcontainers` is not needed.
 
 Note about version compatibility:
 
+- `0.10.x` supports `testcontainers` `0.23`
 - `0.9.x` supports `testcontainers` `0.22`
 - `0.8.x` supports `testcontainers` `0.21`
 - `0.7.x` supports `testcontainers` `0.21`
