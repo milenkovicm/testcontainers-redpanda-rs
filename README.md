@@ -9,7 +9,7 @@ Unofficial testcontainer for [Redpanda](https://redpanda.com). Redpanda is a sim
 Add dependency:
 
 ```toml
-testcontainers-redpanda-rs = { version = "0.9" }
+testcontainers-redpanda-rs = { version = "0.10" }
 ```
 
 Create and run redpanda container:
