@@ -19,6 +19,6 @@ env_logger = "0.11"
 rdkafka = { version = "0.37", features = ["cmake-build"] }
 rusty_ulid = "2.0"
 tokio = { version = "1", features = ["rt", "macros"]}
-ctor = { version = "0.2" }
+ctor = { version = "0.3" }
 serial_test = { version = "3.1" }
 reqwest = { version = "0.12" }
