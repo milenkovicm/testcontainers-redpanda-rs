@@ -1,8 +1,8 @@
 #![doc = include_str!("../README.md")]
 
 use testcontainers::{
-    core::{wait::LogWaitStrategy, ContainerPort, ContainerState, ExecCommand, WaitFor},
     ContainerRequest, Image, ImageExt, TestcontainersError,
+    core::{ContainerPort, ContainerState, ExecCommand, WaitFor, wait::LogWaitStrategy},
 };
 
 pub use testcontainers;
