@@ -65,7 +65,7 @@ where
     for (id, future) in futures {
         match future.await {
             Ok(Delivery { partition, offset, .. }) => message_map.insert((partition, offset), id),
-            Err((kafka_error, _message)) => panic!("Delivery failed: {}", kafka_error),
+            Err((kafka_error, _message)) => panic!("Delivery failed: {kafka_error}"),
         };
     }
 
@@ -73,11 +73,11 @@ where
 }
 
 pub fn value_fn(id: i32) -> String {
-    format!("Message {}", id)
+    format!("Message {id}")
 }
 
 pub fn key_fn(id: i32) -> String {
-    format!("Key {}", id)
+    format!("Key {id}")
 }
 
 pub fn random_topic_name() -> String {

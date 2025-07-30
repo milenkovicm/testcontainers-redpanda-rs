@@ -47,7 +47,7 @@ impl Redpanda {
     /// - `topic_name` name of the topic to be created
     /// - `partitions` number fo partitions for given topic
     pub fn cmd_create_topic(topic_name: &str, partitions: i32) -> ExecCommand {
-        log::debug!("cmd create topic [{}], with [{}] partition(s)", topic_name, partitions);
+        log::debug!("cmd create topic [{topic_name}], with [{partitions}] partition(s)");
         // not the best ready_condition
         let container_ready_conditions = vec![
             WaitFor::Log(LogWaitStrategy::stderr("Create topics")),

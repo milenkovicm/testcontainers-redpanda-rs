@@ -15,11 +15,11 @@ mod test {
             "localhost:{}",
             instance.get_host_port_ipv4(REDPANDA_PORT).await.unwrap()
         );
-        log::info!("bootstrap servers: {}", bootstrap_servers);
+        log::info!("bootstrap servers: {bootstrap_servers}");
 
         let test_topic_name = random_topic_name();
 
-        log::info!("populating topic: [{}] ...", test_topic_name);
+        log::info!("populating topic: [{test_topic_name}] ...");
         populate_topic(&bootstrap_servers, &test_topic_name, 10, &value_fn, &key_fn, None, None).await;
     }
 
@@ -38,18 +38,18 @@ mod test {
         // if topic has only one partition this part is optional
         // it will be automatically created when client connects
         let test_topic_name = &random_topic_name();
-        log::info!("creating topic: [{}] ...", test_topic_name);
+        log::info!("creating topic: [{test_topic_name}] ...");
         instance
             .exec(Redpanda::cmd_create_topic(test_topic_name, 3))
             .await
             .unwrap();
 
-        log::info!("bootstrap servers: {}", bootstrap_servers);
-        log::info!("populating topic: [{}] ...", test_topic_name);
+        log::info!("bootstrap servers: {bootstrap_servers}");
+        log::info!("populating topic: [{test_topic_name}] ...");
 
         populate_topic(
             &bootstrap_servers,
-            &test_topic_name,
+            test_topic_name,
             10,
             &value_fn,
             &key_fn,
@@ -104,11 +104,11 @@ mod test {
             "localhost:{}",
             instance.get_host_port_ipv4(REDPANDA_PORT).await.unwrap()
         );
-        log::info!("bootstrap servers: {}", bootstrap_servers);
+        log::info!("bootstrap servers: {bootstrap_servers}");
 
         let test_topic_name = random_topic_name();
 
-        log::info!("populating topic: [{}] ...", test_topic_name);
+        log::info!("populating topic: [{test_topic_name}] ...");
         populate_topic(&bootstrap_servers, &test_topic_name, 10, &value_fn, &key_fn, None, None).await;
     }
 }
