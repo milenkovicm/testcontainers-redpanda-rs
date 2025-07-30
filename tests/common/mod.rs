@@ -4,6 +4,7 @@
 
 use rdkafka::config::ClientConfig;
 use rdkafka::message::ToBytes;
+use rdkafka::producer::future_producer::Delivery;
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use std::collections::HashMap;
 use std::time::Duration;
@@ -63,7 +64,7 @@ where
     let mut message_map = HashMap::new();
     for (id, future) in futures {
         match future.await {
-            Ok((partition, offset)) => message_map.insert((partition, offset), id),
+            Ok(Delivery { partition, offset, .. }) => message_map.insert((partition, offset), id),
             Err((kafka_error, _message)) => panic!("Delivery failed: {}", kafka_error),
         };
     }
