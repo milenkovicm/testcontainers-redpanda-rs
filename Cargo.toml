@@ -1,6 +1,6 @@
 [package]
 name = "testcontainers-redpanda-rs"
-version = "0.12.0"
+version = "0.13.0"
 edition = "2024"
 license = "MIT"
 description = "Unofficial redpanda test container"
@@ -13,7 +13,7 @@ rust-version = "1.85.1"
 
 [dependencies]
 log = "0.4"
-testcontainers = { version = "0.25" }
+testcontainers = { version = "0.26" }
 
 [dev-dependencies]
 env_logger = "0.11"
