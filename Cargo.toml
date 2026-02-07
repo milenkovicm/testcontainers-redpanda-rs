@@ -13,7 +13,7 @@ rust-version = "1.85.1"
 
 [dependencies]
 log = "0.4"
-testcontainers = { version = "0.26" }
+testcontainers = { version = "0.27" }
 
 [dev-dependencies]
 env_logger = "0.11"
