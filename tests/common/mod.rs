@@ -85,7 +85,7 @@ pub fn random_topic_name() -> String {
 }
 
 #[cfg(test)]
-#[ctor::ctor]
+#[ctor::ctor(unsafe)]
 fn init() {
     // Enable RUST_LOG logging configuration for test
     let _ = env_logger::builder()
